@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { errorHandler } from "../src/middlewares/errorhandler.middleware.js"
 const app = express();
 
 app.use(
@@ -14,3 +15,4 @@ app.use(express.json());
 app.use(cookieParser());
 app.set(express.static("public"));
 export { app };
+app.use(errorHandler);
