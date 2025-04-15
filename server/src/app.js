@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.set(express.static("public"));
 export { app };
-
+import doctorAuthRoute from "./routes/doctor.route.js";
+app.use("/api/v1", doctorAuthRoute)
 
 
 app.use(errorHandler);

@@ -18,9 +18,12 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         required: true
+    },
+    refreshToken: {
+        type: String
     }
 
-}, { timestamps })
+}, { timestamps: true })
 
 
 userSchema.pre("save", async function (next) {
