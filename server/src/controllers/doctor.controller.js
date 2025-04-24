@@ -101,4 +101,44 @@ const loginDoctor = wrapAsync(async (req, res) => {
             )
         )
 })
-export { registerDoctor, loginDoctor }
+
+const logoutDoctor = wrapAsync(async (req, res) => {
+    // get the user from  the verify jwt
+    // access its refresh token and remove it
+    // remove the access and refresh token from cookies
+    const logoutUser = await User.findByIdAndUpdate(req.user?.id,
+        {
+            $unset: {
+                refreshToken: 1
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    if (!logoutUser) {
+        throw ApiError(401, "Failed to logout User")
+    }
+
+    let options = {
+        httpOnly: true,
+        secure: true
+    }
+    res.status(200)
+        .clearCookie("refreshToken", options)
+        .clearCookie("accessToken", options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    logoutUser
+                },
+                "User logged out successfully"
+            )
+        )
+});
+
+
+
+export { registerDoctor, loginDoctor, logoutDoctor }
