@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { wrapAsync } from "../utils/wrapAsync.js"
 import { generateAccessAndRefreshTokens } from "../utils/generateTokens.js"
+import jwt from "jsonwebtoken"
 const registerDoctor = wrapAsync(async (req, res) => {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
@@ -138,6 +139,7 @@ const logoutDoctor = wrapAsync(async (req, res) => {
             )
         )
 });
+
 
 
 
