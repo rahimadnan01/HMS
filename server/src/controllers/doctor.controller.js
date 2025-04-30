@@ -4,7 +4,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { wrapAsync } from "../utils/wrapAsync.js"
 import { generateAccessAndRefreshTokens } from "../utils/generateTokens.js"
-import jwt from "jsonwebtoken"
+import {uploadOnCloudinary} from "../utils/cloudinary.js"
 const registerDoctor = wrapAsync(async (req, res) => {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
@@ -140,7 +140,56 @@ const logoutDoctor = wrapAsync(async (req, res) => {
         )
 });
 
+const updateDoctor  = wrapAsync(async(req,res)=>{
+const {id} = req.params;
+if(!id){
+    throw new ApiError(401,"Something went wrong while searching the id of this uset")
+}
+const {firstName,lastName,speciality,gender,dateOfBirth,phoneNum,degree,aboutMe} = req.body;
+if(!firstName || !lastName || !speciality || !dateOfBirth || !phoneNum || !degree || !aboutMe ){
+throw new ApiError(401,"All fields are required")
+}
+const avatarPath = req.files?.avatar[0]?.path;
+if(!avatarPath){
+    throw new ApiError(401,"Avatar path is required")
+};
+
+const avatarUrl = await uploadOnCloudinary(avatarPath);
+if(!avatarUrl){
+    throw new ApiError(500,"Failed to upload avtar")
+}
+
+const updatedDoctor = await Doctor.findByIdAndUpdate(id,
+    {
+        $set:{
+            firstName:firstName,
+            lastName:lastName,
+            dateOfBirth:dateOfBirth,
+            speciality:speciality,
+            phoneNum:phoneNum,
+           degree:degree,
+           gender:gender,
+           aboutMe:aboutMe,
+           avatar:avatarUrl.url
+        }
+    },
+    {
+        new :true
+    }
+);
+
+res.status(200)
+.json(
+    new ApiResponse(
+        200,
+        {
+            updateDoctor
+        },
+        "Doctor updatde successfully"
+    )
+)
+})
 
 
 
-export { registerDoctor, loginDoctor, logoutDoctor }
+export { registerDoctor, loginDoctor, logoutDoctor ,updateDoctor}

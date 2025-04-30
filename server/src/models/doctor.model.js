@@ -4,8 +4,33 @@ const doctorSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    qualification: {
-        type: String,
+    firstName:{
+        type:String,
+    },
+    lastName:{
+        type:String
+    },
+    dateOfBirth:{
+        type:Date
+    },
+    speciality:{
+        type:String
+    },
+    phoneNum:{
+        type:String
+    },
+   
+    degree:{
+        type:String
+    },
+    gender:{
+        type:String
+    },
+    aboutMe:{
+        type:String
+    },
+    avatar:{
+        typr:String
     }
 }, { timestamps: true })
 
