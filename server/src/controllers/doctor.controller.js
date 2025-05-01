@@ -140,56 +140,66 @@ const logoutDoctor = wrapAsync(async (req, res) => {
         )
 });
 
-const updateDoctor  = wrapAsync(async(req,res)=>{
-const {id} = req.params;
-if(!id){
-    throw new ApiError(401,"Something went wrong while searching the id of this uset")
+const addDoctor = wrapAsync(async(req,res)=>{
+    
+const {lastName,firstName,dateOfBirth,speciality,phoneNum,degree,gender,avatar,aboutMe} = req.body;
+if (!lastName || !firstName || !dateOfBirth || !speciality || !phoneNum || !degree || !gender ||  !aboutMe){
+    throw new ApiError(401,"All fields are required")
 }
-const {firstName,lastName,speciality,gender,dateOfBirth,phoneNum,degree,aboutMe} = req.body;
-if(!firstName || !lastName || !speciality || !dateOfBirth || !phoneNum || !degree || !aboutMe ){
-throw new ApiError(401,"All fields are required")
-}
-const avatarPath = req.files?.avatar[0]?.path;
+const avatarPath = req.files?.avatar[0]?.path
 if(!avatarPath){
-    throw new ApiError(401,"Avatar path is required")
-};
-
-const avatarUrl = await uploadOnCloudinary(avatarPath);
-if(!avatarUrl){
-    throw new ApiError(500,"Failed to upload avtar")
+    throw new ApiError(401,"Path is required for avatar")
+}
+let avatarUrl;
+if(avatarPath){
+    avatarUrl = await uploadOnCloudinary(avatarPath)
 }
 
-const updatedDoctor = await Doctor.findByIdAndUpdate(id,
-    {
-        $set:{
-            firstName:firstName,
-            lastName:lastName,
-            dateOfBirth:dateOfBirth,
-            speciality:speciality,
-            phoneNum:phoneNum,
-           degree:degree,
-           gender:gender,
-           aboutMe:aboutMe,
-           avatar:avatarUrl.url
-        }
-    },
-    {
-        new :true
-    }
-);
+const existedDoctor = await User.findOne({email:email})
+if(existedDoctor){
+    throw new ApiError(401,"User already esists of this email")
+}
+
+const user = await User.create({
+    username:firstName,
+    email:email,
+    password:password,
+    role:"doctor"
+})
+
+if(!user){
+    throw new ApiError(500," Failed to craete new User")
+}
+
+const doctor = await Doctor.create({
+    user:user._id,
+    email:user.email,
+    password:user.password,
+    firstName:firstName,
+    lastName:lastName,
+    dateOfBirth:dateOfBirth,
+    speciality:speciality,
+    phoneNum:phoneNum,
+    degree:degree,
+    gender:gender,
+    aboutMe:aboutMe,
+    avatar:avatarUrl.url
+})
+
+if(!doctor){
+    throw new ApiError(500,"Failed to create new Doctor")
+}
 
 res.status(200)
 .json(
     new ApiResponse(
         200,
-        {
-            updateDoctor
-        },
-        "Doctor updatde successfully"
+        doctor,
+        "successfully created new Doctor"
     )
 )
 })
 
 
 
-export { registerDoctor, loginDoctor, logoutDoctor ,updateDoctor}
+export { registerDoctor, loginDoctor, logoutDoctor ,addDoctor}
