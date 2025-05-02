@@ -243,6 +243,15 @@ const updateDoctor = wrapAsync(async (req, res) => {
   if (!doctor) {
     throw new ApiError(404, "Doctor not found of this id");
   }
+
+  const avatarPath = req.files?.avatar[0].path;
+  if (!avatarPath) {
+    throw new ApiError(404, "Path for avatar is required");
+  }
+  let avatarUrl;
+  if (avatarPath) {
+    avatarUrl = await uploadOnCloudinary(avatarPath);
+  }
   if (lastName) doctor.lastName = lastName;
   if (firstName) doctor.firstName = firstName;
   if (dateOfBirth) doctor.dateOfBirth = dateOfBirth;
@@ -251,6 +260,16 @@ const updateDoctor = wrapAsync(async (req, res) => {
   if (degree) doctor.degree = degree;
   if (gender) doctor.gender = gender;
   if (aboutMe) doctor.aboutMe = aboutMe;
+  if (avatarUrl) doctor.avatar = avatarUrl.url;
+
+  doctor.save();
+  const updatedDoctor = await Doctor.findById(doctor._id);
+  if (!updateDoctor) {
+    throw new ApiError(500, "Failed to update the doctor");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedDoctor, "Doctor updated successfully"));
 });
 
-export { registerDoctor, loginDoctor, logoutDoctor, addDoctor };
+export { registerDoctor, loginDoctor, logoutDoctor, addDoctor, updateDoctor };
