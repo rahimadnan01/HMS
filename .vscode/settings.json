@@ -1,0 +1,9 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "importCost.smallPackageSize": 500,
+    "importCost.mediumPackageSize": 1000,
+    "importCost.largePackageSize": 2000,
+    "importCost.showSizesOnHover": true,
+    "importCost.showSizesOnEditor": true,
+}
