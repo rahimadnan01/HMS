@@ -271,5 +271,29 @@ const updateDoctor = wrapAsync(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, updatedDoctor, "Doctor updated successfully"));
 });
+// get all doctors
+const getAllDoctors = wrapAsync(async (req, res) => {
+  const allDoctors = await Doctor.find({});
+  if (!allDoctors) {
+    throw new ApiError(500, "Failed to fetch all doctors");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, allDoctors, "all doctors fetched successfully"));
+});
+// get single doctor
+const getSingleDoctor = wrapAsync(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new ApiError(401, "Id is not defined");
+  }
+  const doctor = await Doctor.findById(id);
+  if (!doctor) {
+    throw new ApiError(500, "failed to fetch a doctor");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, doctor, "Doctor fetced successfully"));
+});
 
 export { registerDoctor, loginDoctor, logoutDoctor, addDoctor, updateDoctor };

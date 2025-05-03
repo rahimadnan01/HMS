@@ -11,7 +11,7 @@ router.route("/doctors/addDoctor").post(
   ]),
   addDoctor
 );
-router.route("/doctors/:id").post(
+router.route("/doctors/:id").put(
   upload.fields([
     {
       name: "avatar",
