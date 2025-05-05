@@ -33,7 +33,7 @@ const registerDoctor = wrapAsync(async (req, res) => {
     user: user._id,
     firstName: "firstName",
     lastName: "lastName",
-    dateOfBirth: "dateOfBirth",
+    dateOfBirth: new Date().toLocaleDateString(),
     speciality: "speciality",
     phoneNum: "phoneNum",
     degree: "degree",
@@ -46,7 +46,6 @@ const registerDoctor = wrapAsync(async (req, res) => {
     path: "user",
     select: "username email role",
   });
-
   if (!createdDoctor) {
     throw new ApiError(401, "Something went wrong while creating the doctor");
   }
@@ -295,5 +294,21 @@ const getSingleDoctor = wrapAsync(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, doctor, "Doctor fetced successfully"));
 });
-
-export { registerDoctor, loginDoctor, logoutDoctor, addDoctor, updateDoctor };
+const deleteDoctor = wrapAsync(async (req, res) => {
+  const { id } = req.params;
+  const deletedDoctor = await Doctor.findByIdAndDelete(id);
+  if (!deletedDoctor) {
+    throw new ApiError(500, "Something went wrong while deleting the doctor");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, deletedDoctor, "Doctor deleted successfully"));
+});
+export {
+  registerDoctor,
+  loginDoctor,
+  logoutDoctor,
+  addDoctor,
+  updateDoctor,
+  deleteDoctor,
+};

@@ -1,38 +1,41 @@
 import mongoose, { Mongoose } from "mongoose";
-const doctorSchema = new mongoose.Schema({
+const doctorSchema = new mongoose.Schema(
+  {
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    firstName:{
-        type:String,
+    firstName: {
+      type: String,
     },
-    lastName:{
-        type:String
+    lastName: {
+      type: String,
     },
-    dateOfBirth:{
-        type:Date
+    dateOfBirth: {
+      type: String,
     },
-    speciality:{
-        type:String
+    speciality: {
+      type: String,
     },
-    phoneNum:{
-        type:String
+    phoneNum: {
+      type: String,
     },
-   
-    degree:{
-        type:String
-    },
-    gender:{
-        type:String
-    },
-    aboutMe:{
-        type:String
-    },
-    avatar:{
-        typr:String
-    }
-}, { timestamps: true })
 
-const Doctor = mongoose.model("Doctor", doctorSchema)
-export { Doctor }
+    degree: {
+      type: String,
+    },
+    gender: {
+      type: String,
+    },
+    aboutMe: {
+      type: String,
+    },
+    avatar: {
+      typr: String,
+    },
+  },
+  { timestamps: true }
+);
+
+const Doctor = mongoose.model("Doctor", doctorSchema);
+export { Doctor };

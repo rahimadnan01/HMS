@@ -1,8 +1,14 @@
 import Router from "express";
 const router = Router();
 import { upload } from "../middlewares/multer.middleware.js";
-import { addDoctor, updateDoctor } from "../controllers/doctor.controller.js";
+import { verifyJwt } from "../middlewares/auth.middelware.js";
+import {
+  addDoctor,
+  deleteDoctor,
+  updateDoctor,
+} from "../controllers/doctor.controller.js";
 router.route("/doctors/addDoctor").post(
+  verifyJwt("admin"),
   upload.fields([
     {
       name: "avatar",
@@ -11,13 +17,17 @@ router.route("/doctors/addDoctor").post(
   ]),
   addDoctor
 );
-router.route("/doctors/:id").put(
-  upload.fields([
-    {
-      name: "avatar",
-      maxCount: 1,
-    },
-  ]),
-  updateDoctor
-);
+router
+  .route("/doctors/:id")
+  .put(
+    verifyJwt("admin"),
+    upload.fields([
+      {
+        name: "avatar",
+        maxCount: 1,
+      },
+    ]),
+    updateDoctor
+  )
+  .delete(verifyJwt("admin"), deleteDoctor);
 export default router;
